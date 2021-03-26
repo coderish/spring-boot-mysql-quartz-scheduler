@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  mysql-database-service:
+    image: "mysql"
+    container_name: mysql-database
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=QUARTZ_SCHEMA
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - "./scripts/quartz.sql:/docker-entrypoint-initdb.d/1.sql"
+
+  spring-boot-timer-service:
+    image: spring-boot-timer
+    container_name: spring-boot-timer
+    build: .
+    ports:
+      - 9092:8080
+    restart: always
+    depends_on:
+      - mysql-database-service
